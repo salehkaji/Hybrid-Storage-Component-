@@ -1,0 +1,414 @@
+
+    Inputs:
+        x: The x script variable
+        y: The y script variable
+    Output:
+        a: The a output variable"""
+        #this is a commet
+
+
+import math 
+import itertools
+from functools import reduce 
+from operator import add
+
+
+
+## subtract production and consumption to find the self demand
+energy = []
+zip_object = zip(Consumption, Production)
+for list1_i, list2_i in zip_object:
+    energy.append(list1_i-list2_i)
+
+
+
+
+#Seprating Over supply and remaning demand
+lstCon = []
+lstPro = []
+
+
+for var1 in energy:
+    if var1 > 0:
+        lstCon.append(var1)
+    else:
+        lstCon.append(0)
+
+
+print lstCon
+
+
+
+lstPro = []
+for var2 in energy:
+    if var2 < 0:
+        lstPro.append(var2)
+    else:
+        lstPro.append(0)
+
+
+
+lstProabs = []
+lstProabs = map(abs, lstPro)
+
+print lstProabs
+
+
+
+ProductionList = lstProabs
+
+
+
+## Charging Battery  
+lstProeff = []
+
+
+for provar in lstProabs:
+    battinput = provar *  batteryeff
+    lstProeff.append(battinput)
+
+
+print lstProeff
+
+
+##Power and stage of charge
+
+SOC=[]
+SOC.append(0)
+lstPower =[]
+
+
+for var2 in lstProeff:
+    for var3 in SOC:
+        temp = (1-var3) * batteryCapcity
+    if var2<temp:
+        Powerbatt = var2
+    else:
+        Powerbatt = temp
+    temp2 = var3 + (Powerbatt/batteryCapcity)
+    lstPower.append(Powerbatt)
+    SOC.append(temp2)
+
+SOC = SOC[:-1]
+
+StateOfCharge = SOC
+BatteryPower = lstPower
+
+
+saving =[]
+for vari in lstPower:
+    saving.append(vari)
+
+
+##Surplust power
+lstPowerdivide = []
+for var4 in saving:
+    temp3 = var4/batteryeff
+    lstPowerdivide.append(temp3)
+
+print lstPowerdivide
+
+
+difference = []
+zip_object = zip(lstProabs,lstPowerdivide)
+for list1_i, list2_i in zip_object:
+    difference.append(list1_i-list2_i)
+
+
+
+
+print SOC
+print lstPower
+print difference
+
+
+
+
+
+BattSurplus = difference
+
+
+print lstCon
+Consumption = lstCon
+
+
+
+####Discharging battery
+
+
+# creaing a morning and afternoon list ]
+length = len(energy)
+middle_index = length//2
+lstCoMorning = energy[:middle_index]
+LstCoEvening = energy[middle_index:]
+
+print lstCoMorning
+print LstCoEvening
+
+
+lstCoMorning1 = []
+for var2 in lstCoMorning:
+    if var2 > 0:
+        lstCoMorning1.append(var2)
+
+print lstCoMorning1
+
+
+
+LstCoEvening1 = []
+for var2 in LstCoEvening:
+    if var2 > 0:
+        LstCoEvening1.append(var2)
+
+print LstCoEvening1
+
+
+
+##Add production by zero to not cover in coverage but remain in list 
+indext = len(lstCoMorning) - len(lstCoMorning1)
+print indext
+addzero = [0] * indext
+
+lstCoMorning1.extend(addzero)
+
+print lstCoMorning1
+
+##Morning outcome
+MorningConsumption = lstCoMorning1
+
+##Evening
+LstCoEvening1 = []
+for var3 in LstCoEvening:
+    if var3 > 0:
+        LstCoEvening1.append(var3)
+
+print LstCoEvening1
+
+
+##adding zero to the evening 
+indext1 = len(LstCoEvening) - len(LstCoEvening1)
+lstCoevening2 = [0] * indext1
+lstCoevening2.extend(LstCoEvening1)
+
+##Evening Outcome
+EveningConsumption = lstCoevening2
+
+print lstCoevening2
+
+
+lstEvening = []
+
+for var5 in lstCoevening2:
+    temp4 = var5
+    lstEvening.append(temp4)
+
+
+lstEvening.extend(lstCoMorning1)
+
+
+
+ConsumptionReverse = lstEvening
+
+unmet = []
+for var8 in lstEvening:
+    unmet.append(var8)
+
+
+
+
+
+
+
+##Power and stage of discharging
+
+SOCdis=[]
+SOCdis.append(1)
+lstPowerdis =[]
+
+for var6 in lstEvening:
+    for var7 in SOCdis:
+        temp5 = var7 * 13 * 0.92
+    if var6<temp5:
+        batterydis = var6
+    else:
+        batterydis = temp5
+    temp6 = var7 - (batterydis/(13*0.92))
+    SOCdis.append(temp6)
+    lstPowerdis.append(batterydis)
+
+SOCdis = SOCdis[:-1]
+
+print SOCdis
+print lstPowerdis
+
+StateOfDischarge = SOCdis
+BatteryPowerDis = lstPowerdis
+
+
+
+print unmet
+
+unmetPower = []
+
+saving = zip(unmet, lstPowerdis)
+for fir, sec in saving:
+    unmetPower.append(fir - sec)
+    
+UnmetPowerEnergy = unmetPower
+
+
+
+##  Electolyser
+
+storedInHydrogen =[]
+print BattSurplus
+
+
+
+for var8 in BattSurplus:
+    hydroinput = var8 *  electoEff
+    storedInHydrogen.append(hydroinput)
+
+
+print storedInHydrogen
+
+
+
+
+
+##Power and stage of charge
+
+SOCH2=[]
+SOCH2.append(0)
+elePower =[]
+
+
+
+for var9 in storedInHydrogen:
+    for var10 in SOCH2:
+        temp6= (1-var10) * batteryCapcity * HHV
+    if var9<temp6:
+        Powerele = var9
+    else:
+        Powerele = temp6
+    temp7 = var10 + ((Powerele/HHV)/H2Storage)
+    elePower.append(Powerele)
+    SOCH2.append(temp7)
+
+print elePower
+print SOCH2
+
+SOCH2 = SOCH2 [:-1]
+
+Elepower = elePower
+EleSOC = SOCH2
+
+## Deleting duplication from Hydrogen capacity
+
+zerolist = []
+SOCH21 = []
+
+
+for var11 in SOCH2:
+    if var11 ==0:
+         zerolist.append(var11)
+    else:
+        SOCH21.append(var11)
+
+
+SOC22 = []
+for var11 in SOCH21: 
+    if var11 not in SOC22: 
+        SOC22.append(var11)
+
+
+
+zerolist.extend(SOC22)
+
+## number 2 means that no solar power and hydrogen is not full
+
+
+lenSOC = len(SOCH21) - len(SOC22)
+
+addingNum = [2] * (lenSOC)
+
+zerolist.extend(addingNum)
+
+zerolist = zerolist [1:]
+zerolist.append(addingNum[-1])
+
+EleSOC = zerolist
+
+
+
+
+## Fuel cell
+
+
+SOCfc=[]
+SOCfc.append(SOC22[-1])
+
+
+print SOCfc
+
+lstPowerfc =[]
+
+for var12 in unmetPower:
+    for var13 in SOCfc:
+        temp8 = var13 * H2Storage * fcEff * HHV
+    if var12<temp8:
+        fcdis = var12
+    else:
+        fcdis = temp8
+    temp9 = var13 - ((fcdis/HHV)/(H2Storage*fcEff))
+    SOCfc.append(temp9)
+    lstPowerfc.append(fcdis)
+
+SOCfc = SOCfc[:-1]
+
+print SOCfc
+print lstPowerfc
+
+StateOfFC = SOCfc
+PowerOfFc = lstPowerfc
+
+
+
+
+unmetFcPower = []
+
+zip_object2 = zip(unmetPower, lstPowerfc)
+for list5_i, list6_i in zip_object2:
+    unmetFcPower.append(list5_i-list6_i)
+
+
+
+
+morningaLast = []
+eveningLast = []
+
+lenghoflist = len(unmetFcPower)
+middleoflist = lenghoflist//2
+
+
+morningaLast = unmetFcPower[:middleoflist]
+eveningLast = unmetFcPower[middleoflist:]
+
+eveningLast.extend(morningaLast)
+
+
+UnmetPowerH2 = eveningLast
+
+
+
+
+
+## Hydrogen capacity
+H2mass = 0
+
+for var14 in SOCH2:
+    temp8 = SOCH2[-1]
+    H2mass = temp8 * H2Storage
+
+
+H2Mass = H2mass
